@@ -257,16 +257,16 @@
 
   const themePalettes = {
     'green-red': {
-      gradStart: '#00e676', // Emerald Mint
-      gradMid: '#ffb703',   // Warm Amber Gold
+      gradStart: '#027a48', // Deep Studio Forest Emerald
+      gradMid: '#059669',   // Rich Dark Jade Gradient
       gradEnd: '#ff2a51',   // Crimson Red
       gradPeak: '#ff758f',  // Neon Ruby
       glow: 'rgba(255, 42, 81, 0.55)',
-      waveStroke1: '#00e676',
-      waveGlow1: 'rgba(0, 230, 118, 0.95)',
+      waveStroke1: '#059669',
+      waveGlow1: 'rgba(5, 150, 105, 0.85)',
       waveStroke2: '#ff2a51',
       waveGlow2: 'rgba(255, 42, 81, 0.85)',
-      radialHueBase: 135
+      radialHueBase: 140
     },
     'black-red': {
       gradStart: '#00e5ff',
