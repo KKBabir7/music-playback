@@ -12,15 +12,13 @@ Built with passion by **Muhammed Imran** (*Queens University, Bangladesh*).
 
 ## 🌟 Key Features
 
-- **Dual Master Studio Themes:**
-  - 🟢 **Professional Gradient Green Theme:** Ultra-sleek emerald, dark jade multi-stop gradients, neon mint glow, and cyber-tech console styling.
-  - 🔴 **Crimson Cyber Red Theme (Classic):** The signature high-voltage crimson, titanium matte, and electric cyan highlights (preserved & toggleable anytime).
-  - ⚡ **Instant Header Quick-Toggle:** Switch between Green and Red with 1 click directly in the top header or via Settings.
+- **Dual Studio Hardware Themes (Switchable in Settings):**
+  - 🟢🔴 **Emerald & Crimson (Green & Red Combined Theme - Default):** Professional gradient green hardware deck with vivid crimson red tactical controls and dual-color spectrum. No plain dark/black surfaces.
+  - ⚫🔴 **Obsidian & Crimson (Black & Red Classic Theme):** The original signature dark cyber studio deck with tactical black panels and glowing red neon indicators.
 - **Real-Time Web Audio API Visualizer Engine:**
   - 📊 **BARS Mode:** Multi-band neon spectrum with peak cap physics.
   - 🌊 **WAVE Mode:** Dual neon oscilloscope waveforms with glowing persistence.
   - 🔘 **RADIAL Mode:** Circular cyber core pulse reactor.
-  - 🎨 **4 Visualizer Color Themes:** Emerald Matrix (Green), Crimson Cyber (Red), Neon Cyan, and Violet Cyberpunk.
 - **Center Stage Video & Audio Player:**
   - Seamlessly plays curated audio tracks and high-definition video presentations.
   - Interactive clickable display to toggle play/pause and switch visualizer modes.
