@@ -52,8 +52,20 @@
                     </div>
                 </div>
 
-                <!-- Visualizer Mode Selectors Moved to the Right Next to ABOUT ME -->
+                <!-- Visualizer Mode & Theme Quick Switchers -->
                 <div class="header-right">
+                    <!-- Studio Theme Quick Switcher: Professional Green & Crimson Red -->
+                    <div class="theme-toggle-dock" title="Switch Theme: Professional Gradient Green or Crimson Red">
+                        <button class="theme-pill-btn active" data-theme-target="green" id="theme-btn-green" title="Professional Gradient Green Theme">
+                            <span class="theme-pill-dot green-dot"></span>
+                            <span class="theme-pill-text">GREEN</span>
+                        </button>
+                        <button class="theme-pill-btn" data-theme-target="red" id="theme-btn-red" title="Classic Crimson Red Theme">
+                            <span class="theme-pill-dot red-dot"></span>
+                            <span class="theme-pill-text">RED</span>
+                        </button>
+                    </div>
+
                     <div class="vis-mode-selector">
                         <button class="vis-btn active" data-mode="bars" title="Bars Spectrum"><i class="fa fa-chart-simple"></i> <span>BARS</span></button>
                         <button class="vis-btn" data-mode="wave" title="Neon Wave"><i class="fa fa-wave-square"></i> <span>WAVE</span></button>
@@ -403,13 +415,41 @@
                 <!-- TAB 3: VISUAL THEMES -->
                 <div id="tab-content-themes" class="settings-tab-pane">
                     <div class="settings-section">
+                        <h4 class="settings-section-heading"><i class="fa fa-sliders"></i> MASTER STUDIO THEME</h4>
+                        <p class="settings-section-desc">Select your master interface color aesthetic. (Red is preserved and always switchable).</p>
+                        <div class="theme-card-grid studio-theme-grid">
+                            <div class="theme-card active" data-app-theme="green">
+                                <div class="theme-swatch green-studio-swatch"></div>
+                                <div class="theme-card-info">
+                                    <div class="theme-title">Professional Gradient Green (Active)</div>
+                                    <div class="theme-desc">Prestigious Emerald & Jade multi-stop gradient, neon mint glow and cyber-tech highlights</div>
+                                </div>
+                            </div>
+                            <div class="theme-card" data-app-theme="red">
+                                <div class="theme-swatch red-studio-swatch"></div>
+                                <div class="theme-card-info">
+                                    <div class="theme-title">Crimson Cyber Red (Classic)</div>
+                                    <div class="theme-desc">High-voltage crimson, titanium matte, and electric cyan highlights</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section" style="margin-top: 24px;">
                         <h4 class="settings-section-heading"><i class="fa fa-palette"></i> SPECTRUM VISUALIZER THEMES</h4>
                         <p class="settings-section-desc">Customize the neon color palette rendered across Bars, Wave, and Radial modes.</p>
                         <div class="theme-card-grid">
-                            <div class="theme-card active" data-theme="crimson">
+                            <div class="theme-card" data-theme="emerald">
+                                <div class="theme-swatch emerald-swatch"></div>
+                                <div class="theme-card-info">
+                                    <div class="theme-title">Emerald Matrix (Green)</div>
+                                    <div class="theme-desc">Professional gradient green and neon mint glow</div>
+                                </div>
+                            </div>
+                            <div class="theme-card" data-theme="crimson">
                                 <div class="theme-swatch crimson-swatch"></div>
                                 <div class="theme-card-info">
-                                    <div class="theme-title">Crimson Cyber (Default)</div>
+                                    <div class="theme-title">Crimson Cyber (Red)</div>
                                     <div class="theme-desc">Electric Crimson, Gold, and Cyan highlights</div>
                                 </div>
                             </div>
@@ -418,13 +458,6 @@
                                 <div class="theme-card-info">
                                     <div class="theme-title">Neon Cyan Pulse</div>
                                     <div class="theme-desc">Deep Sapphire, Cobalt, and Ice Cyan</div>
-                                </div>
-                            </div>
-                            <div class="theme-card" data-theme="emerald">
-                                <div class="theme-swatch emerald-swatch"></div>
-                                <div class="theme-card-info">
-                                    <div class="theme-title">Emerald Matrix</div>
-                                    <div class="theme-desc">High-contrast Terminal Green and Mint</div>
                                 </div>
                             </div>
                             <div class="theme-card" data-theme="violet">

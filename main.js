@@ -247,7 +247,7 @@
   let animationFrameId = null;
 
   // Visualizer Color Themes
-  let visualizerTheme = 'crimson'; // 'crimson' | 'cyan' | 'emerald' | 'violet'
+  let visualizerTheme = 'emerald'; // 'emerald' | 'crimson' | 'cyan' | 'violet'
   const themePalettes = {
     crimson: {
       gradStart: '#00e5ff',
@@ -261,6 +261,30 @@
       waveGlow2: 'rgba(255, 42, 81, 0.6)',
       radialHueBase: 340
     },
+    emerald: {
+      gradStart: '#003d1f',
+      gradMid: '#00b359',
+      gradEnd: '#00e676',
+      gradPeak: '#69f0ae',
+      glow: 'rgba(0, 230, 118, 0.55)',
+      waveStroke1: '#00f5a0',
+      waveGlow1: 'rgba(0, 245, 160, 0.9)',
+      waveStroke2: '#00c853',
+      waveGlow2: 'rgba(0, 200, 83, 0.65)',
+      radialHueBase: 145
+    },
+    green: {
+      gradStart: '#003d1f',
+      gradMid: '#00b359',
+      gradEnd: '#00e676',
+      gradPeak: '#69f0ae',
+      glow: 'rgba(0, 230, 118, 0.55)',
+      waveStroke1: '#00f5a0',
+      waveGlow1: 'rgba(0, 245, 160, 0.9)',
+      waveStroke2: '#00c853',
+      waveGlow2: 'rgba(0, 200, 83, 0.65)',
+      radialHueBase: 145
+    },
     cyan: {
       gradStart: '#0055ff',
       gradMid: '#00c3ff',
@@ -272,18 +296,6 @@
       waveStroke2: '#0055ff',
       waveGlow2: 'rgba(0, 85, 255, 0.6)',
       radialHueBase: 190
-    },
-    emerald: {
-      gradStart: '#004d25',
-      gradMid: '#00e676',
-      gradEnd: '#06d6a0',
-      gradPeak: '#b9f6ca',
-      glow: 'rgba(6, 214, 160, 0.45)',
-      waveStroke1: '#06d6a0',
-      waveGlow1: 'rgba(6, 214, 160, 0.9)',
-      waveStroke2: '#00e676',
-      waveGlow2: 'rgba(0, 230, 118, 0.6)',
-      radialHueBase: 145
     },
     violet: {
       gradStart: '#5e17eb',
@@ -1717,13 +1729,72 @@
     });
   });
 
-  // Theme Cards in Settings Themes tab
-  const themeCards = document.querySelectorAll('.theme-card');
-  themeCards.forEach(card => {
+  // ==========================================================================
+  // MASTER STUDIO THEME MANAGEMENT (PROFESSIONAL GRADIENT GREEN & CRIMSON RED)
+  // ==========================================================================
+  let currentStudioTheme = localStorage.getItem('imran_studio_theme') || 'green';
+
+  function setStudioTheme(themeName, showNotification = true) {
+    if (themeName !== 'red' && themeName !== 'green') themeName = 'green';
+    currentStudioTheme = themeName;
+
+    // Apply data-theme attribute on root and body
+    document.documentElement.setAttribute('data-theme', themeName);
+    document.body.setAttribute('data-theme', themeName);
+
+    // Update Header Theme Pill Buttons
+    const themePillBtns = document.querySelectorAll('.theme-pill-btn');
+    themePillBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.themeTarget === themeName);
+    });
+
+    // Update Settings Modal Master Theme Cards
+    const appThemeCards = document.querySelectorAll('.theme-card[data-app-theme]');
+    appThemeCards.forEach(card => {
+      card.classList.toggle('active', card.dataset.appTheme === themeName);
+    });
+
+    // Synchronize default visualizer palette
+    if (themeName === 'green') {
+      visualizerTheme = 'emerald';
+    } else if (themeName === 'red') {
+      visualizerTheme = 'crimson';
+    }
+    const visThemeCards = document.querySelectorAll('.theme-card[data-theme]');
+    visThemeCards.forEach(c => c.classList.toggle('active', c.dataset.theme === visualizerTheme));
+
+    // Persist choice in local storage
+    localStorage.setItem('imran_studio_theme', themeName);
+
+    if (showNotification) {
+      const label = themeName === 'green' ? 'Professional Gradient Green' : 'Crimson Cyber Red';
+      showToast(`Studio Theme: ${label}`);
+    }
+  }
+
+  // Header Theme Pill Buttons event listeners
+  const themePillBtns = document.querySelectorAll('.theme-pill-btn');
+  themePillBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      setStudioTheme(btn.dataset.themeTarget, true);
+    });
+  });
+
+  // Settings Modal Master Theme Cards event listeners
+  const appThemeCards = document.querySelectorAll('.theme-card[data-app-theme]');
+  appThemeCards.forEach(card => {
+    card.addEventListener('click', () => {
+      setStudioTheme(card.dataset.appTheme, true);
+    });
+  });
+
+  // Settings Modal Spectrum Visualizer Theme Cards event listeners
+  const visThemeCards = document.querySelectorAll('.theme-card[data-theme]');
+  visThemeCards.forEach(card => {
     card.addEventListener('click', () => {
       visualizerTheme = card.dataset.theme;
-      themeCards.forEach(c => c.classList.toggle('active', c.dataset.theme === visualizerTheme));
-      showToast(`Visualizer Theme: ${visualizerTheme.toUpperCase()}`);
+      visThemeCards.forEach(c => c.classList.toggle('active', c.dataset.theme === visualizerTheme));
+      showToast(`Visualizer Palette: ${visualizerTheme.toUpperCase()}`);
     });
   });
 
@@ -1742,6 +1813,7 @@
   }
 
   // Initialize
+  setStudioTheme(currentStudioTheme, false);
   resizeCanvas();
   renderPlaylist();
   setVolume(currentVolume);
