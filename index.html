@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0c10">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>IMRAN PLAYBACK | Studio Audio & Video Console | Muhammed Imran</title>
+    <meta name="title" content="IMRANPLAYBACK - Industrial Studio Audio & Video Station | Muhammed Imran"/>
+    <meta name="description" content="State-of-the-art Web Audio & Video Player with real-time spectrum visualizer, video playback, and curated music. Built with love by Muhammed Imran, Queens University."/>
+    <meta name="keywords" content="IMRANPLAYBACK, Music For Coding, Muhammed Imran, Queens University, Web Audio Visualizer, Studio Console, Bangladesh">
+    <meta name="robots" content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"/>
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="imranplayback.w3learners.com"/>
+    <meta property="og:domain" content="https://imranplayback.w3learners.com"/>
+    <meta property="og:title" content="IMRANPLAYBACK | Studio Audio & Video Console"/>
+    <meta property="og:description" content="High-performance studio audio workstation with real-time spectrum visualizers, video player, and tactical hardware controls."/>
+    <meta property="og:image" content="images/PlayerHome.png"/>
+    <meta property="og:url" content="https://imranplayback.w3learners.com/" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="IMRANPLAYBACK - Studio Audio & Video Player">
+    <meta name="twitter:description" content="High-performance studio audio workstation with real-time spectrum visualizers and tactical hardware controls.">
+    <meta name="twitter:image" content="images/PlayerHome.png">
+
+    <!-- Icons & Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="player.css">
+</head>
+<body>
+
+    <!-- Hidden Native Audio and File Input Elements -->
+    <audio id="audio-element" preload="auto" crossorigin="anonymous"></audio>
+    <input type="file" id="file-input" multiple accept="audio/*,video/*" style="display:none;">
+
+    <div class="studio-wrapper">
+        <main class="studio-chassis">
+            
+            <!-- TOP HARDWARE HEADER BAR -->
+            <header class="chassis-header">
+                <div class="header-left">
+                    <div class="branding-box">
+                        <h1 class="brand-title"><span>IMRAN</span> PLAYBACK</h1>
+                        <button id="btn-fullscreen-toggle" class="btn-header-icon" title="Toggle Full Screen (F)">
+                            <i class="fa fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Visualizer Mode Selectors Moved to the Right Next to ABOUT ME -->
+                <div class="header-right">
+                    <div class="vis-mode-selector">
+                        <button class="vis-btn active" data-mode="bars" title="Bars Spectrum"><i class="fa fa-chart-simple"></i> <span>BARS</span></button>
+                        <button class="vis-btn" data-mode="wave" title="Neon Wave"><i class="fa fa-wave-square"></i> <span>WAVE</span></button>
+                        <button class="vis-btn" data-mode="radial" title="Radial Pulse"><i class="fa fa-compact-disc"></i> <span>RADIAL</span></button>
+                    </div>
+                    <button id="btn-open-settings" class="btn-tactile btn-settings" title="Studio System & Library Manager">
+                        <i class="fa fa-gear"></i> <span>SETTINGS</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- 3-COLUMN STUDIO DECK (FULL VIEWPORT FIT, NO WINDOW SCROLLING) -->
+            <section class="studio-deck">
+                
+                <!-- LEFT HARDWARE RACK (STREAMLINED & HIGH UTILITY) -->
+                <aside class="rack-left">
+                    <div class="rack-top-group">
+                        <div class="rack-section-title">COMMAND RACK</div>
+                        <div class="rack-buttons">
+                            <button id="rack-btn-toggle" class="rack-btn" title="Toggle Play / Pause">
+                                <span id="rack-toggle-text"><i class="fa fa-play" style="font-size:0.75rem; margin-right:6px;"></i> PLAY</span>
+                                <span class="btn-indicator"></span>
+                            </button>
+                            <button id="rack-btn-stop" class="rack-btn">
+                                <span><i class="fa fa-stop" style="font-size:0.75rem; margin-right:6px;"></i> STOP</span>
+                                <span class="btn-indicator"></span>
+                            </button>
+                            <button id="rack-btn-openfile" class="rack-btn">
+                                <span><i class="fa fa-folder-open" style="font-size:0.75rem; margin-right:6px;"></i> OPEN FILE</span>
+                                <span class="btn-indicator"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SCROLLABLE LOWER RACK MODULES (DOCKED TO BOTTOM ON LARGE SCREENS) -->
+                    <div class="rack-scroll-body">
+                        <div class="rack-bottom-cluster">
+                            <!-- STUDIO VINYL DISC / DECK ANIMATION -->
+                            <div class="vinyl-deck-module">
+                                <div id="vinyl-disc" class="vinyl-disc">
+                                    <div class="vinyl-groove"></div>
+                                    <div class="vinyl-center"><i class="fa fa-compact-disc"></i></div>
+                                </div>
+                                <div class="vinyl-label-box">
+                                    <span class="vinyl-badge">STUDIO DECK</span>
+                                    <span id="vinyl-status-text" class="vinyl-track-name">STANDBY</span>
+                                </div>
+                            </div>
+
+                            <!-- FOCUS / SLEEP TIMER (AUTO-OFF) -->
+                            <div class="rack-module">
+                                <div class="rack-section-title">
+                                    <span>SLEEP TIMER</span>
+                                    <span id="timer-countdown" style="color:var(--accent-cyan); font-family:var(--font-mono); font-size:0.65rem;">OFF</span>
+                                </div>
+                                <div class="timer-grid">
+                                    <button class="timer-btn active" data-timer="0">OFF</button>
+                                    <button class="timer-btn" data-timer="15">15M</button>
+                                    <button class="timer-btn" data-timer="30">30M</button>
+                                    <button class="timer-btn" data-timer="60">60M</button>
+                                </div>
+                            </div>
+
+                            <!-- Master Stereo VU Meters with Dynamic dB Readout -->
+                            <div class="vu-meter-container">
+                                <div class="rack-section-title" style="margin-bottom:4px;">
+                                    <span>STEREO VU</span>
+                                    <span id="vu-db-readout" style="color:var(--accent-red); font-family:var(--font-mono); font-size:0.6rem;">-∞ dB</span>
+                                </div>
+                                <div class="vu-scale">
+                                    <span>-24</span>
+                                    <span>-12</span>
+                                    <span>-6</span>
+                                    <span>0dB</span>
+                                    <span>+3</span>
+                                </div>
+                                <div class="vu-channel">
+                                    <span class="vu-label">L</span>
+                                    <div class="vu-bar"><div id="vu-fill-l" class="vu-fill"></div></div>
+                                </div>
+                                <div class="vu-channel">
+                                    <span class="vu-label">R</span>
+                                    <div class="vu-bar"><div id="vu-fill-r" class="vu-fill"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- CENTER DISPLAY MONITOR & TRANSPORT CONTROLLER -->
+                <section class="rack-center">
+                    
+                    <!-- OLED Screen Housing -->
+                    <div class="screen-chassis">
+                        <div class="screen-hud">
+                            <div class="hud-track-info">
+                                <div id="hud-status" class="hud-status-badge">
+                                    <span class="hud-pulse"></span> STANDBY
+                                </div>
+                                <div id="hud-title" class="hud-title">Select a Track</div>
+                                <div id="hud-artist" class="hud-artist">Imran Playback Studio</div>
+                            </div>
+                        </div>
+
+                        <!-- Media Stage: Canvas Visualizer and Centered Video Player -->
+                        <div class="media-stage">
+                            <canvas id="canvas"></canvas>
+                            <video id="video-player" playsinline></video>
+                            <div id="canvas-hint" class="canvas-hint">
+                                <i class="fa fa-retweet"></i> CLICK SCREEN TO SWITCH VISUALIZER
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Transport Deck -->
+                    <div class="transport-deck">
+                        
+                        <!-- Seeker Bar -->
+                        <div class="seeker-wrapper">
+                            <span id="current-time" class="time-stamp current">00:00</span>
+                            <div class="seeker-bar-container">
+                                <div class="seeker-track">
+                                    <div id="seeker-buffer" class="seeker-buffer"></div>
+                                    <div id="seeker-progress" class="seeker-progress"></div>
+                                </div>
+                                <input type="range" id="seeker-bar" class="seeker-input" min="0" max="100" value="0" step="0.1">
+                            </div>
+                            <span id="duration-time" class="time-stamp">00:00</span>
+                        </div>
+
+                        <!-- Transport Controls & Volume -->
+                        <div class="transport-controls">
+                            <div class="control-group-left">
+                                <button id="btn-shuffle" class="btn-ctrl" title="Shuffle Mode (S)">
+                                    <i class="fa fa-shuffle"></i>
+                                </button>
+                                <button id="btn-repeat" class="btn-ctrl" title="Repeat Track (L)">
+                                    <i class="fa fa-repeat"></i>
+                                </button>
+                                <button id="btn-fav" class="btn-ctrl" title="Favorite Current Track">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                            </div>
+
+                            <div class="control-group-center">
+                                <button id="btn-prev" class="btn-ctrl" title="Previous Track">
+                                    <i class="fa fa-backward-step"></i>
+                                </button>
+                                <button id="btn-rewind" class="btn-ctrl" title="Rewind 10 Seconds">
+                                    <i class="fa fa-backward"></i>
+                                </button>
+                                <button id="btn-play-primary" class="btn-play-primary" title="Play / Pause (Space)">
+                                    <i class="fa fa-play" style="margin-left: 3px;"></i>
+                                </button>
+                                <button id="btn-forward" class="btn-ctrl" title="Forward 10 Seconds">
+                                    <i class="fa fa-forward"></i>
+                                </button>
+                                <button id="btn-next" class="btn-ctrl" title="Next Track">
+                                    <i class="fa fa-forward-step"></i>
+                                </button>
+                            </div>
+
+                            <div class="control-group-right">
+                                <div class="volume-deck">
+                                    <button id="btn-mute" class="btn-ctrl" style="width:28px;height:28px;font-size:0.85rem;" title="Mute (M)">
+                                        <i class="fa fa-volume-high"></i>
+                                    </button>
+                                    <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="85">
+                                    <span id="volume-pct" class="volume-pct">85%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- RIGHT RACK: PLAYLIST & LIBRARY -->
+                <aside class="rack-right">
+                    <div class="playlist-header">
+                        <div class="playlist-title-bar">
+                            <div class="playlist-title">
+                                <i class="fa fa-layer-group" style="color:var(--accent-red);"></i> PLAYLIST
+                            </div>
+                            <div id="playlist-counter" class="track-counter">21 TRACKS</div>
+                        </div>
+
+                        <!-- Audio & Video Media Filter Tabs -->
+                        <div class="playlist-filter-tabs">
+                            <button class="filter-tab active" data-filter="all">
+                                <i class="fa fa-table-cells-large"></i> ALL
+                            </button>
+                            <button class="filter-tab" data-filter="audio">
+                                <i class="fa fa-music"></i> AUDIO
+                            </button>
+                            <button class="filter-tab" data-filter="video">
+                                <i class="fa fa-video"></i> VIDEO
+                            </button>
+                            <button class="filter-tab" data-filter="fav">
+                                <i class="fa fa-heart"></i> FAV
+                            </button>
+                        </div>
+
+                        <div class="search-input-wrapper">
+                            <i class="fa fa-search search-icon"></i>
+                            <input type="text" id="playlist-search" class="search-input" placeholder="Search track or artist...">
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Playlist Items -->
+                    <ul id="playlist-items" class="playlist-scroll"></ul>
+
+                    <!-- Local Upload / Add Music -->
+                    <div class="playlist-footer">
+                        <button id="btn-upload-file" class="btn-upload-file">
+                            <i class="fa fa-cloud-arrow-up"></i> LOAD LOCAL MUSIC / VIDEO
+                        </button>
+                    </div>
+                </aside>
+
+            </section>
+
+            <!-- MOBILE APP BOTTOM DOCK NAVIGATION (ACTIVE ONLY ON MOBILE/TABLET <= 900PX) -->
+            <nav class="mobile-app-dock" id="mobile-app-dock">
+                <button class="mob-dock-btn" data-mob-view="rack">
+                    <i class="fa fa-sliders"></i>
+                    <span>STUDIO</span>
+                </button>
+                <button class="mob-dock-btn active" data-mob-view="player">
+                    <i class="fa fa-compact-disc"></i>
+                    <span>PLAYING</span>
+                </button>
+                <button class="mob-dock-btn" data-mob-view="playlist">
+                    <i class="fa fa-list-ul"></i>
+                    <span>PLAYLIST</span>
+                </button>
+            </nav>
+        </main>
+    </div>
+
+    <!-- STUDIO SETTINGS & LIBRARY MANAGER MODAL -->
+    <div id="modal-settings" class="modal-backdrop">
+        <div class="settings-modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa fa-sliders" style="color:var(--accent-red); margin-right:8px;"></i> STUDIO SYSTEM & LIBRARY SETTINGS
+                </div>
+                <button id="btn-close-settings" class="btn-close-modal"><i class="fa fa-xmark"></i></button>
+            </div>
+
+            <!-- Settings Tabs Navigation -->
+            <div class="settings-tabs-nav">
+                <button class="settings-tab-btn active" data-tab="library">
+                    <i class="fa fa-folder-tree"></i> LIBRARY MANAGER
+                </button>
+                <button class="settings-tab-btn" data-tab="dsp">
+                    <i class="fa fa-sliders"></i> DSP & EQUALIZER
+                </button>
+                <button class="settings-tab-btn" data-tab="themes">
+                    <i class="fa fa-palette"></i> VISUAL THEMES
+                </button>
+                <button class="settings-tab-btn" data-tab="system">
+                    <i class="fa fa-keyboard"></i> SHORTCUTS & DATA
+                </button>
+                <button class="settings-tab-btn" data-tab="about">
+                    <i class="fa fa-user-circle"></i> ABOUT CREATOR
+                </button>
+            </div>
+
+            <div class="settings-body">
+                <!-- TAB 1: TRACK & LIBRARY MANAGER (AUDIO & VIDEO DELETE) -->
+                <div id="tab-content-library" class="settings-tab-pane active">
+                    <div class="manager-toolbar">
+                        <div class="manager-search-box">
+                            <i class="fa fa-search"></i>
+                            <input type="text" id="manager-search-input" placeholder="Search tracks to manage or delete...">
+                        </div>
+                        <div class="manager-filter-pills">
+                            <button class="manager-pill active" data-mfilter="all">ALL (<span id="mgr-count-all">0</span>)</button>
+                            <button class="manager-pill" data-mfilter="audio">AUDIO (<span id="mgr-count-audio">0</span>)</button>
+                            <button class="manager-pill" data-mfilter="video">VIDEO (<span id="mgr-count-video">0</span>)</button>
+                        </div>
+                    </div>
+
+                    <div class="manager-action-row">
+                        <label class="mgr-select-all-label">
+                            <input type="checkbox" id="mgr-select-all" class="studio-checkbox">
+                            <span>SELECT ALL</span>
+                        </label>
+                        <span id="manager-stats-text" class="manager-stats">21 Tracks Loaded</span>
+                        <button id="btn-delete-selected" class="btn-subtle danger" style="display:none;" title="Delete Selected Tracks">
+                            <i class="fa fa-trash-can"></i> DELETE SELECTED (<span id="selected-count">0</span>)
+                        </button>
+                    </div>
+
+                    <!-- Scrollable Manageable Track List with Delete Option -->
+                    <div id="manager-track-list" class="manager-track-list">
+                        <!-- Populated dynamically by main.js with delete buttons -->
+                    </div>
+                </div>
+
+                <!-- TAB 2: DSP AUDIO & EQUALIZER -->
+                <div id="tab-content-dsp" class="settings-tab-pane">
+                    <div class="settings-section">
+                        <h4 class="settings-section-heading"><i class="fa fa-wave-square"></i> HARDWARE EQUALIZER PRESETS</h4>
+                        <p class="settings-section-desc">Select an active digital signal processing profile to enhance bass, mid-range presence, or vocal clarity in real-time.</p>
+                        <div class="eq-preset-grid">
+                            <button class="eq-card active" data-eq="flat">
+                                <div class="eq-card-title">FLAT</div>
+                                <div class="eq-card-desc">Reference Studio Balance (0dB)</div>
+                            </button>
+                            <button class="eq-card" data-eq="bass">
+                                <div class="eq-card-title">BASS BOOST</div>
+                                <div class="eq-card-desc">+9dB Sub-Bass Resonance</div>
+                            </button>
+                            <button class="eq-card" data-eq="vocal">
+                                <div class="eq-card-title">VOCAL CLARITY</div>
+                                <div class="eq-card-desc">+5dB Presence Mid-Range</div>
+                            </button>
+                            <button class="eq-card" data-eq="edm">
+                                <div class="eq-card-title">EDM / CLUB</div>
+                                <div class="eq-card-desc">Punchy Lows & Bright Highs</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h4 class="settings-section-heading"><i class="fa fa-gauge"></i> PLAYBACK PREFERENCES</h4>
+                        <div class="settings-toggle-row">
+                            <div>
+                                <div class="toggle-label">Auto-Advance Next Track</div>
+                                <div class="toggle-desc">Automatically transition to the next track when current media finishes</div>
+                            </div>
+                            <input type="checkbox" id="setting-autonext" checked class="studio-switch">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: VISUAL THEMES -->
+                <div id="tab-content-themes" class="settings-tab-pane">
+                    <div class="settings-section">
+                        <h4 class="settings-section-heading"><i class="fa fa-palette"></i> SPECTRUM VISUALIZER THEMES</h4>
+                        <p class="settings-section-desc">Customize the neon color palette rendered across Bars, Wave, and Radial modes.</p>
+                        <div class="theme-card-grid">
+                            <div class="theme-card active" data-theme="crimson">
+                                <div class="theme-swatch crimson-swatch"></div>
+                                <div class="theme-card-info">
+                                    <div class="theme-title">Crimson Cyber (Default)</div>
+                                    <div class="theme-desc">Electric Crimson, Gold, and Cyan highlights</div>
+                                </div>
+                            </div>
+                            <div class="theme-card" data-theme="cyan">
+                                <div class="theme-swatch cyan-swatch"></div>
+                                <div class="theme-card-info">
+                                    <div class="theme-title">Neon Cyan Pulse</div>
+                                    <div class="theme-desc">Deep Sapphire, Cobalt, and Ice Cyan</div>
+                                </div>
+                            </div>
+                            <div class="theme-card" data-theme="emerald">
+                                <div class="theme-swatch emerald-swatch"></div>
+                                <div class="theme-card-info">
+                                    <div class="theme-title">Emerald Matrix</div>
+                                    <div class="theme-desc">High-contrast Terminal Green and Mint</div>
+                                </div>
+                            </div>
+                            <div class="theme-card" data-theme="violet">
+                                <div class="theme-swatch violet-swatch"></div>
+                                <div class="theme-card-info">
+                                    <div class="theme-title">Violet Cyberpunk</div>
+                                    <div class="theme-desc">Deep Purple, Magenta, and Ultraviolet</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: SHORTCUTS & DATA -->
+                <div id="tab-content-system" class="settings-tab-pane">
+                    <div class="settings-section">
+                        <h4 class="settings-section-heading"><i class="fa fa-keyboard"></i> KEYBOARD SHORTCUTS REFERENCE</h4>
+                        <div class="shortcuts-grid">
+                            <div class="shortcut-item"><kbd>Space</kbd><span>Play / Pause</span></div>
+                            <div class="shortcut-item"><kbd>←</kbd> / <kbd>→</kbd><span>Seek 5s Backward / Forward</span></div>
+                            <div class="shortcut-item"><kbd>↑</kbd> / <kbd>↓</kbd><span>Volume Up / Down</span></div>
+                            <div class="shortcut-item"><kbd>M</kbd><span>Mute / Unmute Audio</span></div>
+                            <div class="shortcut-item"><kbd>F</kbd><span>Toggle Fullscreen</span></div>
+                            <div class="shortcut-item"><kbd>S</kbd><span>Toggle Shuffle Mode</span></div>
+                            <div class="shortcut-item"><kbd>L</kbd><span>Toggle Repeat Track</span></div>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h4 class="settings-section-heading"><i class="fa fa-database"></i> STORAGE & FAVORITES</h4>
+                        <div class="storage-action-box">
+                            <div>
+                                <div class="toggle-label">Favorites Storage</div>
+                                <div class="toggle-desc"><span id="fav-storage-count">0</span> tracks currently marked as favorite</div>
+                            </div>
+                            <button id="btn-clear-favorites" class="btn-subtle danger">
+                                <i class="fa fa-heart-crack"></i> CLEAR FAVORITES
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 5: ABOUT CREATOR -->
+                <div id="tab-content-about" class="settings-tab-pane">
+                    <div class="settings-section about-section-pane">
+                        <div class="profile-avatar-wrapper">
+                            <img src="images/Me.png" alt="Muhammed Imran" class="profile-img" onerror="this.src='images/IPBK_ME.png'">
+                        </div>
+                        <div class="profile-name">MUHAMMED IMRAN</div>
+                        <div class="profile-tagline">Software Developer • Queens University, Bangladesh</div>
+                        <p class="profile-bio">
+                            Passionate developer engineering immersive audio-visual applications, web experiences, and innovative software solutions. Welcome to IMRAN PLAYBACK — tuned for deep coding and focus.
+                        </p>
+                        <div class="profile-badges">
+                            <span class="p-badge">HTML5 Web Audio</span>
+                            <span class="p-badge">Canvas Visualizers</span>
+                            <span class="p-badge">JavaScript</span>
+                            <span class="p-badge">w3learners</span>
+                        </div>
+                        <div class="profile-links">
+                            <a href="https://w3learners.com" target="_blank" rel="noopener" class="social-link">
+                                <i class="fa fa-globe"></i> w3learners.com
+                            </a>
+                            <a href="https://www.youtube.com/@w3learners" target="_blank" rel="noopener" class="social-link">
+                                <i class="fa-brands fa-youtube"></i> YouTube
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STUDIO TOAST NOTIFICATION -->
+    <div id="studio-toast" class="studio-toast"></div>
+
+    <!-- Scripts -->
+    <script src="main.js"></script>
+</body>
+</html>
