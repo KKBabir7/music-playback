@@ -3088,7 +3088,7 @@ body.theme-green-red .screen-chassis {
 
 body.theme-green-red .screen-hud {
   background: linear-gradient(180deg, rgba(6, 24, 15, 0.96) 0%, rgba(6, 24, 15, 0.75) 65%, transparent 100%);
-  border-bottom: 1.5px solid rgba(4, 120, 87, 0.45);
+  border-bottom: none;
 }
 
 body.theme-green-red .hud-pulse {
