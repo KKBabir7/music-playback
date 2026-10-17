@@ -1340,30 +1340,47 @@ html, body {
   border-top: 1px solid var(--border-dark);
 }
 
-.btn-upload-file {
+.upload-btn-group {
+  display: flex;
+  gap: 8px;
   width: 100%;
+}
+
+.btn-upload-file {
+  flex: 1;
   background: #171b23;
   border: 1px dashed #303847;
   color: var(--text-secondary);
   font-family: var(--font-tech);
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  padding: 8px;
+  padding: 8px 6px;
   border-radius: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 6px;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .btn-upload-file:hover {
   border-color: var(--accent-red);
   color: #fff;
-  background: rgba(255, 42, 81, 0.05);
+  background: rgba(255, 42, 81, 0.08);
+}
+
+.btn-upload-folder {
+  border-color: #26384a;
+}
+
+.btn-upload-folder:hover {
+  border-color: var(--accent-cyan);
+  color: #fff;
+  background: rgba(0, 229, 255, 0.08);
 }
 
 /* ==========================================================================

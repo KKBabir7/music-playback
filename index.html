@@ -36,6 +36,7 @@
     <!-- Hidden Native Audio and File Input Elements -->
     <audio id="audio-element" preload="auto" crossorigin="anonymous"></audio>
     <input type="file" id="file-input" multiple accept="audio/*,video/*" style="display:none;">
+    <input type="file" id="folder-input" webkitdirectory directory multiple style="display:none;">
 
     <div class="studio-wrapper">
         <main class="studio-chassis">
@@ -80,8 +81,12 @@
                                 <span><i class="fa fa-stop" style="font-size:0.75rem; margin-right:6px;"></i> STOP</span>
                                 <span class="btn-indicator"></span>
                             </button>
-                            <button id="rack-btn-openfile" class="rack-btn">
-                                <span><i class="fa fa-folder-open" style="font-size:0.75rem; margin-right:6px;"></i> OPEN FILE</span>
+                            <button id="rack-btn-openfile" class="rack-btn" title="Open Audio & Video Files">
+                                <span><i class="fa fa-file-audio" style="font-size:0.75rem; margin-right:6px;"></i> OPEN FILE</span>
+                                <span class="btn-indicator"></span>
+                            </button>
+                            <button id="rack-btn-openfolder" class="rack-btn" title="Open Entire Folder of Audio & Video">
+                                <span><i class="fa fa-folder-open" style="font-size:0.75rem; margin-right:6px;"></i> OPEN FOLDER</span>
                                 <span class="btn-indicator"></span>
                             </button>
                         </div>
@@ -264,11 +269,16 @@
                     <!-- Scrollable Playlist Items -->
                     <ul id="playlist-items" class="playlist-scroll"></ul>
 
-                    <!-- Local Upload / Add Music -->
+                    <!-- Local Upload / Add Music & Folder -->
                     <div class="playlist-footer">
-                        <button id="btn-upload-file" class="btn-upload-file">
-                            <i class="fa fa-cloud-arrow-up"></i> LOAD LOCAL MUSIC / VIDEO
-                        </button>
+                        <div class="upload-btn-group">
+                            <button id="btn-upload-file" class="btn-upload-file" title="Load Audio or Video Files">
+                                <i class="fa fa-file-circle-plus"></i> FILES
+                            </button>
+                            <button id="btn-upload-folder" class="btn-upload-file btn-upload-folder" title="Load Entire Folder (Recursively loads all audio & video)">
+                                <i class="fa fa-folder-open"></i> FOLDER
+                            </button>
+                        </div>
                     </div>
                 </aside>
 

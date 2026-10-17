@@ -181,6 +181,7 @@
   const rackToggleText = document.getElementById('rack-toggle-text');
   const rackBtnStop = document.getElementById('rack-btn-stop');
   const rackBtnOpenFile = document.getElementById('rack-btn-openfile');
+  const rackBtnOpenFolder = document.getElementById('rack-btn-openfolder');
   const rackBtnFav = document.getElementById('rack-btn-fav');
   const rackFavText = document.getElementById('rack-fav-text');
   const btnFav = document.getElementById('btn-fav');
@@ -216,7 +217,9 @@
   const playlistCounter = document.getElementById('playlist-counter');
   const playlistSearch = document.getElementById('playlist-search');
   const btnUploadFile = document.getElementById('btn-upload-file');
+  const btnUploadFolder = document.getElementById('btn-upload-folder');
   const fileInput = document.getElementById('file-input');
+  const folderInput = document.getElementById('folder-input');
   const filterTabs = document.querySelectorAll('.filter-tab');
   const countAllEl = document.getElementById('count-all');
   const countAudioEl = document.getElementById('count-audio');
@@ -1064,21 +1067,126 @@
   });
 
   /**
-   * Local File Upload Handler (Detects Video or Audio, opens Video in center immediately)
+   * Media File Type Detection & Validation
+   */
+  function isAudioFile(file) {
+    if (!file || !file.name) return false;
+    if (file.type && file.type.startsWith('audio/')) return true;
+    return /\.(mp3|wav|ogg|m4a|aac|flac|opus|weba|wma)$/i.test(file.name);
+  }
+
+  function isVideoFile(file) {
+    if (!file || !file.name) return false;
+    if (file.type && file.type.startsWith('video/')) return true;
+    return /\.(mp4|webm|mkv|mov|avi|m4v|ogv)$/i.test(file.name);
+  }
+
+  function isMediaFile(file) {
+    return isAudioFile(file) || isVideoFile(file);
+  }
+
+  /**
+   * Recursively read files from DataTransferItemList (Folder Drag & Drop)
+   */
+  async function getAllFilesFromDataTransfer(dataTransfer) {
+    if (!dataTransfer) return [];
+    const items = dataTransfer.items;
+    if (items && items.length > 0 && items[0].webkitGetAsEntry) {
+      const queue = [];
+      for (let i = 0; i < items.length; i++) {
+        const entry = items[i].webkitGetAsEntry();
+        if (entry) {
+          queue.push(readFileSystemEntry(entry));
+        }
+      }
+      const results = await Promise.all(queue);
+      return results.flat();
+    } else if (dataTransfer.files && dataTransfer.files.length > 0) {
+      return Array.from(dataTransfer.files);
+    }
+    return [];
+  }
+
+  function readFileSystemEntry(entry) {
+    return new Promise((resolve) => {
+      if (!entry) return resolve([]);
+      if (entry.isFile) {
+        entry.file(
+          (file) => {
+            file.entryFullPath = entry.fullPath;
+            resolve([file]);
+          },
+          () => resolve([])
+        );
+      } else if (entry.isDirectory) {
+        const dirReader = entry.createReader();
+        const collectedFiles = [];
+
+        const readBatch = () => {
+          dirReader.readEntries(
+            async (entries) => {
+              if (!entries || entries.length === 0) {
+                resolve(collectedFiles.flat());
+              } else {
+                const subTasks = entries.map((child) => readFileSystemEntry(child));
+                const subResults = await Promise.all(subTasks);
+                collectedFiles.push(...subResults.flat());
+                readBatch(); // Directory readers return entries in batches of ~100
+              }
+            },
+            () => resolve(collectedFiles.flat())
+          );
+        };
+
+        readBatch();
+      } else {
+        resolve([]);
+      }
+    });
+  }
+
+  /**
+   * Local File/Folder Upload Handler (Detects Video or Audio, opens Video in center immediately)
    */
   function handleFiles(files) {
     if (!files || files.length === 0) return;
 
+    const fileList = Array.from(files);
+    // Filter only valid audio and video files (skip images, text files, metadata, etc.)
+    const mediaFiles = fileList.filter(isMediaFile);
+
+    if (mediaFiles.length === 0) {
+      if (typeof showToast === 'function') {
+        showToast('No audio or video files found in selection.');
+      }
+      return;
+    }
+
     let hasVideo = false;
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const isVid = file.type.startsWith('video/') || /\.(mp4|webm|mkv|mov|avi)$/i.test(file.name);
+    // Iterate in reverse so the first file ends up at index 0 when unshifting
+    for (let i = mediaFiles.length - 1; i >= 0; i--) {
+      const file = mediaFiles[i];
+      const isVid = isVideoFile(file);
       if (isVid) hasVideo = true;
       const blobUrl = URL.createObjectURL(file);
 
+      // Determine artist name from directory path if available
+      let artistName = isVid ? "User Local Video" : "User Local Audio";
+      const fullPath = file.webkitRelativePath || file.entryFullPath || '';
+      if (fullPath) {
+        const parts = fullPath.split('/').filter(Boolean);
+        if (parts.length > 2) {
+          // Folder/Subfolder/Song.mp3 -> Subfolder as artist/album
+          artistName = parts[parts.length - 2];
+        } else if (parts.length === 2) {
+          // Folder/Song.mp3 -> Folder as artist
+          artistName = parts[0];
+        }
+      }
+
       playlist.unshift({
         title: file.name.replace(/\.[^/.]+$/, ""),
-        artist: isVid ? "User Local Video" : "User Local Audio",
+        artist: artistName,
         src: blobUrl,
         type: isVid ? "video" : "audio"
       });
@@ -1099,21 +1207,39 @@
     if (window.innerWidth <= 900) {
       setMobileView('player');
     }
+
+    if (typeof showToast === 'function') {
+      showToast(`Added ${mediaFiles.length} media track${mediaFiles.length > 1 ? 's' : ''} to playlist`);
+    }
+
+    // Reset input values so same file/folder can be selected again
+    if (fileInput) fileInput.value = '';
+    if (folderInput) folderInput.value = '';
   }
 
+  // File & Folder input change listeners
   if (fileInput) {
     fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
   }
+  if (folderInput) {
+    folderInput.addEventListener('change', (e) => handleFiles(e.target.files));
+  }
 
+  // File & Folder button click listeners
   if (btnUploadFile) {
-    btnUploadFile.addEventListener('click', () => fileInput.click());
+    btnUploadFile.addEventListener('click', () => fileInput && fileInput.click());
   }
-
+  if (btnUploadFolder) {
+    btnUploadFolder.addEventListener('click', () => folderInput && folderInput.click());
+  }
   if (rackBtnOpenFile) {
-    rackBtnOpenFile.addEventListener('click', () => fileInput.click());
+    rackBtnOpenFile.addEventListener('click', () => fileInput && fileInput.click());
+  }
+  if (rackBtnOpenFolder) {
+    rackBtnOpenFolder.addEventListener('click', () => folderInput && folderInput.click());
   }
 
-  // Drag and drop files directly onto Chassis
+  // Drag and drop files & folders directly onto Studio Chassis
   const chassis = document.querySelector('.studio-chassis');
   if (chassis) {
     chassis.addEventListener('dragover', (e) => {
@@ -1123,10 +1249,16 @@
     chassis.addEventListener('dragleave', () => {
       chassis.style.borderColor = 'var(--border-dark)';
     });
-    chassis.addEventListener('drop', (e) => {
+    chassis.addEventListener('drop', async (e) => {
       e.preventDefault();
       chassis.style.borderColor = 'var(--border-dark)';
-      handleFiles(e.dataTransfer.files);
+      try {
+        const allFiles = await getAllFilesFromDataTransfer(e.dataTransfer);
+        handleFiles(allFiles);
+      } catch (err) {
+        console.error('Error reading dropped files/folders:', err);
+        handleFiles(e.dataTransfer.files);
+      }
     });
   }
 
